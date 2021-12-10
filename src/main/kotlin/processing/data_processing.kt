@@ -4,7 +4,7 @@ import streams.*
 
 
 fun atLeastOneGradeA(student: Student): Boolean {
-	return student.grades.any { grade -> grade.type == GradeType.A }
+	return student.grades.any { it.type == GradeType.A }
 }
 
 
@@ -28,27 +28,27 @@ fun countMaleStudents(students: List<Student>): Int {
 // gender == Gender.FEMALE
 // or gender.name == "FEMALE"
 fun avgAgeOfFemaleStudent(students: List<Student>): Double {
-	return getStudentAges(students.filter{it.gender == Gender.FEMALE}).average()
+	return students.asSequence().filter{it.gender == Gender.FEMALE}.map{it.age}.average()
 }
 
 fun getProductOfStudentAges(students: List<Student>): Int {
-	return getStudentAges(students).reduce{acc,i -> acc*i}
+	return students.fold(1) {acc,i -> acc*i.age}
 }
 
 // ignore F Grades
 fun productOfStudentGrades(student: Student): Int {
-	return student.grades.map { it.type.value }.filter { it != 0 }.reduce {acc, i -> acc * i}
+	return student.grades.asSequence().filter { it.type.value != 0 }.map { it.type.value }.reduce{acc,g -> acc*g}
 }
 
 // region BONUS
 
 // use maxByOrNull on grades
 fun getBestMathGradeFromStudent(student: Student): Grade? {
-	return student.grades.filter { it.subject == Subject.MATH }.maxByOrNull { it }
+	return student.grades.asSequence().filter { it.subject == Subject.MATH }.maxByOrNull { it.type.value }
 }
 
 fun getSortedAges(students: List<Student>): List<Int> {
-	return getStudentAges(students).sorted()
+	return students.map { it.age }.sorted()
 }
 
 // endregion
